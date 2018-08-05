@@ -1,53 +1,43 @@
 #include <iostream>
-#include <math.h>
-using namespace std;
 
-float triangle(float a[][3]){                      //判断三角形是否在三维空间存在，存在计算面积，不存在返回0
-        //a坐标a[0][1]a[0][2]a[0][3]
-        float lenth1=sqrt(pow((a[0][0]-a[1][0]),2)+pow((a[0][1]-a[1][1]),2)+pow((a[0][2]-a[1][2]),2));
-        float lenth2=sqrt(pow((a[0][0]-a[2][0]),2)+pow((a[0][1]-a[2][1]),2)+pow((a[0][2]-a[2][2]),2));
-        float lenth3=sqrt(pow((a[1][0]-a[2][0]),2)+pow((a[1][1]-a[2][1]),2)+pow((a[1][2]-a[2][2]),2));
-        if (lenth1+lenth2<lenth3||lenth3+lenth2<lenth1||lenth1+lenth3<lenth2)
-                return 0;
-        float p=lenth1+lenth2+lenth3;
-        p=p/2;
-        float sum=sqrt(p*(p-lenth1)*(p-lenth3)*(p-lenth2));
-        return sum;
+using namespace std;
+struct fenshu{
+int fenzi;
+int fenmu;
+fenshu(int a,int b):fenzi(a),fenmu(b){}
+}a[2]{{11,6},{7,2}};
+int max_yin(int a,int b){                                    //辗转相除法求最大公因数
+        while(1)
+        {
+        if(a>b) a=a % b;
+        else
+        b=b%a;
+        if(a==0) return b;
+        if(b==0) return a;
+        }
 }
 
-        int zuhe(int a,int b){                                  //排列组合，a小b大
-                if(a==0)
-                        return 1;
-                else{
-                        int tempb=1;
-                        int tempa=1;
-                                for(int i=0;i<a;i++){
-                                        tempb=tempb*(b-i);
-                                        tempa=tempa*(a-i);
-                                }
-                        return tempb/tempa;
-                }
+fenshu operator + (fenshu a,fenshu b){
+        int afenzi=a.fenzi*b.fenmu;
+        int bfenzi=b.fenzi*a.fenmu;
+        int sumfenzi=afenzi+bfenzi;
+        int sumfenmu=a.fenmu*b.fenmu;
+        int tempyue=max_yin(sumfenzi,sumfenmu);
+  //      int tfz=sumfenzi/tempyue;                //约分后分子
+  //      int tfm=sumfenmu/tempyue;               //约分后分母
+        fenshu result(sumfenzi/tempyue,sumfenmu/tempyue);
+        return result;
+}
+void printfenshu(fenshu a){
+        if(a.fenmu==1)
+                cout<<a.fenzi;
+        else
+                cout<<a.fenzi<<"/"<<a.fenmu;
 
-        }
-
-        int cal(int a,int b, int c,int d){                    //C(a,b)*C(c,d)
-                int temp=1;
-                temp=zuhe(a,b)*zuhe(c,d);
-                return temp;
-        }
-
-        int jiecheng(int a){                                 //阶乘
-                if(a==0)
-                        return 1;
-                long long temp=a;
-                for(int i=a-1;i>0;i--)
-                        temp=temp*i;
-                return temp;
-        }
+}
 int main()
 {
-        float a[3][3]={{0,0,0},{0,1,0},{1,0,0}};
-        cout << triangle(a)<<endl;
-        cout<<jiecheng(0);
+        fenshu result=a[0]+a[1];
+        printfenshu(result);
         return 0;
 }
